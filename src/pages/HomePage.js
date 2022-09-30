@@ -16,10 +16,10 @@ function useParallax(value, distance) {
   return useTransform(value, [0, 1], [-distance, distance]);
 }
 
-function NameIntro({ id }) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref });
-  const y = useParallax(scrollYProgress, 300);
+function NameIntro() {
+  // const ref = useRef(null);
+  // const { scrollYProgress } = useScroll({ target: ref });
+  // const y = useParallax(scrollYProgress, 300);
 
   return (
     <div className="scroll-area">
