@@ -1,0 +1,62 @@
+
+.scroll-area {
+  font-size: 60px;
+  height: 100%;
+}
+
+.scroll-area {
+  scroll-snap-align: center;
+}
+
+.scroll-area {
+  margin: 0 auto;
+}
+
+.scroll-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-container {
+  height: 100%;
+}
+
+* {
+  background-color: #F6E7DB;
+}
+
+/* .scroll-container,
+.scroll-area {
+  font-size: 60px;
+  height: 100%;
+}
+
+.scroll-container {
+  overflow: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.scroll-area {
+  scroll-snap-align: center;
+}
+
+.scroll-container,
+.scroll-area {
+  margin: 0 auto;
+}
+
+.scroll-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+} */
+
+/* .scroll-container::-webkit-scrollbar {
+  display: none;
+} */
