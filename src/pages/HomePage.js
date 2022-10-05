@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   Box
 } from '@mui/material';
@@ -33,31 +33,80 @@ import ExperienceItem from '../components/ExperienceItem';
 //   );
 // }
 
-function SideNavigatorItem() {
+function SideNavigatorItem({ selected, onClick }) {
   return (
-    <Box sx={{ mt: 1, height: 80, bgcolor: '#DCC0AA', borderRadius: 5 }} />
+    <div
+      onClick={onClick}
+      className="fadeColor"
+      style={{
+        marginTop: 10,
+        height: (selected ? 100 : 40),
+        backgroundColor: (selected ? '#AD8668' : '#DCC0AA'),
+        borderRadius: 50,
+        cursor: 'pointer',
+      }}
+    />
   );
 };
+
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height
+  };
+}
 
 const exp = require('../Experiences.json');
 
 function HomePage() {
+  const refs = useRef(new Array(exp.length + 1));
+  const [offsetY, setOffsetY] = useState(0);
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  // Make page scroll back to top on refresh
+  window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+  }
+
+  useEffect(() => {
+    const handleScroll = () => setOffsetY(window.pageYOffset);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setWindowDimensions(getWindowDimensions());
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const currentIndex = () => Math.round(offsetY / windowDimensions.height);
+
   return (
     <Box>
-      <NameIntro />
+      <div className="scroll-area" style={{ height: '100vh' }} ref={(element) => { refs.current[0] = element }}>
+        <NameIntro />
+      </div>
 
       <Box className="scroll-container" sx={{ height: '100vh' }}>
         {/* <img src={require('../MishaPortrait.png')} style={{ position: 'absolute', height: '100vh', top: 0 }}/> */}
 
         {exp.map((item, id) => {
           return (
-            <ExperienceItem
-              title={item.title}
-              role={item.role}
-              description={item.description}
-              id={id}
+            <div
+              className="scroll-area"
+              style={{ width: '70%', margin: '0 auto' }}
+              ref={(element) => { refs.current[id + 1] = element }}
               key={id}
-            />
+            >
+              <ExperienceItem
+                title={item.title}
+                role={item.role}
+                description={item.description}
+                id={id}
+              />
+            </div>
           )
         })}
 
@@ -72,8 +121,25 @@ function HomePage() {
         top: '50%',
         left: '20px'
       }}>
-        <Box sx={{ height: 20, bgcolor: '#DCC0AA', borderRadius: 5 }} />
-        {exp.map((item, id) => <SideNavigatorItem key={id} />)}
+        <Box
+          className="fadeColor"
+          onClick={() => refs.current[0].scrollIntoView({ behavior: 'smooth' })}
+          sx={{
+            height: 20,
+            backgroundColor: (currentIndex() === 0 ? '#AD8668' : '#DCC0AA'),
+            borderRadius: 5,
+            cursor: 'pointer',
+          }}
+        />
+        {exp.map((item, id) => {
+          return (
+            <SideNavigatorItem
+              key={id}
+              selected={currentIndex() - 1 === id}
+              onClick={() => refs.current[id + 1].scrollIntoView({ behavior: 'smooth' })}
+            />
+          )
+        })}
       </Box>
     </Box>
   )
